@@ -8,13 +8,15 @@ pygame.mixer.init()
 
 # Dados gerais do jogo.
 TITULO = 'Climbing Tower'
-WIDTH = 600 # Largura da tela
-HEIGHT = 700 # Altura da tela
-TILE_SIZE = 40 # Tamanho de cada tile
+WIDTH = 1000 # Largura da tela
+HEIGHT = 600 # Altura da tela
+TILE_SIZE = 20 # Tamanho de cada tile
 PLAYER_WIDTH = TILE_SIZE
-PLAYER_HEIGHT = int(TILE_SIZE * 1.5)
+PLAYER_HEIGHT = int(TILE_SIZE * 2)
 FPS = 60 # Frames por segundo
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+WINDOW_SIZE = (1000,600) # set up window size
+
+screen = pygame.display.set_mode(WINDOW_SIZE,0,0)
 pygame.display.set_caption(TITULO)
 
 #Define as Imagens
@@ -26,7 +28,7 @@ FONT = 'font'
 
 
 # Define a aceleração da gravidade
-GRAVITY = 5
+GRAVITY = 2
 # Define a velocidade inicial no pulo
 JUMP_SIZE = TILE_SIZE
 # Define a velocidade em x
@@ -54,10 +56,10 @@ MAP = [
     [EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
     [BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK],
-    [EMPTY, EMPTY, BLOCK, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, BLOCK, BLOCK, BLOCK],
-    [BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
-    [BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
 ]
 
 class Tile(pygame.sprite.Sprite):
@@ -74,8 +76,8 @@ class Tile(pygame.sprite.Sprite):
         self.image = tile_img
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-        self.rect.x = x 
-        self.rect.y = y
+        self.rect.x = x * 100
+        self.rect.y = y * 40
 
 # Classe Jogador que representa o herói
 class Player(pygame.sprite.Sprite):
@@ -93,7 +95,7 @@ class Player(pygame.sprite.Sprite):
         # Ajusta o tamanho da imagem
         player_img = pygame.transform.scale(player_img, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
-        # Define a imagem do sprite. Nesse exemplo vamos usar uma imagem estática (não teremos animação durante o pulo)
+        # Define a imagem do sprite. Nesse vamos usar uma imagem estática (não teremos animação durante o pulo)
         self.image = player_img
 
         # Detalhes sobre o posicionamento.
@@ -103,7 +105,7 @@ class Player(pygame.sprite.Sprite):
         self.blocks = blocks
 
         # Posiciona o personagem
-        self.rect.x = WIDTH / 2
+        self.rect.x = 0
         self.rect.bottom = HEIGHT
 
         # Metodo que atualiza a posição do personagem
@@ -151,7 +153,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
             self.speedy = 0
-            self.state =STILL
+            self.state = STILL
         # Se colidiu com algum bloco, volta para o ponto antes da colisão
         collisions = pygame.sprite.spritecollide(self, self.blocks, False)
         # Corrige a posição do personagem para antes da colisão
@@ -199,7 +201,7 @@ def game_screen(screen):
     # Carrega o fundo do jogo
     background = assets[BACKGROUND_IMG]
     # Redimensiona o fundo   
-    background = pygame.transform.scale(background, (700, 650))
+    background = pygame.transform.scale(background, WINDOW_SIZE)
     background_rect = background.get_rect()
 
     # Cria Sprite do jogador
@@ -210,14 +212,14 @@ def game_screen(screen):
     DONE = 1
     state = PLAYING
 
-
     for column in range(len(MAP)):
         for row in range(len(MAP[column])):
             tile_type = MAP[column][row]
             if tile_type == BLOCK:
                 tile = Tile(assets[tile_type], row, column)
+                blocks.add(tile)        
                 all_sprites.add(tile)
-                blocks.add(tile)
+                world_sprites.add(tile)
 
     while state != DONE:
 
@@ -249,7 +251,7 @@ def game_screen(screen):
                 elif event.key == pygame.K_RIGHT:
                     player.speedx -= SPEED_X
 
-        
+
         screen.blit(background, background_rect)
         all_sprites.update()
         all_sprites.draw(screen)
