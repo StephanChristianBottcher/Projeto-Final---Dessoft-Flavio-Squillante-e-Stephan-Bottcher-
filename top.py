@@ -3,7 +3,6 @@ import random
 from os import path
 
 pygame.init()
-
 pygame.mixer.init()
 
 # Dados gerais do jogo.
@@ -28,16 +27,18 @@ FONT = 'font'
 
 
 # Define a aceleração da gravidade
-GRAVITY = 2
+GRAVITY = 1.7
 # Define a velocidade inicial no pulo
 JUMP_SIZE = TILE_SIZE
 # Define a velocidade em x
-SPEED_X = 5
+SPEED_X = 7
 
 # Define estados possíveis do jogador
 STILL = 0
 JUMPING = 1
 FALLING = 2
+
+
 
 # Define os tipos de tiles
 BLOCK = 0
@@ -45,21 +46,21 @@ EMPTY = -1
 
 # Define o mapa com os tipos de tiles
 MAP = [
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
-    [BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, BLOCK],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
 ]
 
 class Tile(pygame.sprite.Sprite):
@@ -78,6 +79,13 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * 100
         self.rect.y = y * 40
+        self.speedx = 0
+
+    def update(self):
+        # Vamos tratar os movimentos de maneira independente.
+
+        # Atualiza a posição x
+        self.rect.x += self.speedx        
 
 # Classe Jogador que representa o herói
 class Player(pygame.sprite.Sprite):
@@ -105,7 +113,7 @@ class Player(pygame.sprite.Sprite):
         self.blocks = blocks
 
         # Posiciona o personagem
-        self.rect.x = 0
+        self.rect.x = WIDTH/2
         self.rect.bottom = HEIGHT
 
         # Metodo que atualiza a posição do personagem
@@ -231,15 +239,21 @@ def game_screen(screen):
 
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state = DONE
+                state=DONE
+                 
+
 
             # Verifica se apertou alguma tecla.
             if event.type == pygame.KEYDOWN:
                 # Dependendo da tecla, altera o estado do jogador.
                 if event.key == pygame.K_LEFT:
-                    player.speedx -= SPEED_X
+                    #player.speedx -= SPEED_X
+                    for block in blocks:
+                        block.speedx += SPEED_X
                 elif event.key == pygame.K_RIGHT:
-                    player.speedx += SPEED_X
+                    for block in blocks:
+                        block.speedx -= SPEED_X  
+                    #player.speedx += SPEED_X
                 elif event.key == pygame.K_UP:
                     player.jump()
 
@@ -247,9 +261,13 @@ def game_screen(screen):
             if event.type == pygame.KEYUP:
                 # Dependendo da tecla, altera o estado do jogador.
                 if event.key == pygame.K_LEFT:
-                    player.speedx += SPEED_X
+                    #player.speedx += SPEED_X
+                    for block in blocks:
+                        block.speedx -= SPEED_X  
                 elif event.key == pygame.K_RIGHT:
-                    player.speedx -= SPEED_X
+                    #player.speedx -= SPEED_X
+                    for block in blocks:
+                        block.speedx += SPEED_X  
 
 
         screen.blit(background, background_rect)
