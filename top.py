@@ -3,15 +3,17 @@ import random
 from os import path
 
 pygame.init()
+
 pygame.mixer.init()
 
 # Dados gerais do jogo.
-TITULO = 'Climbing Tower'
+TITULO = 'Projeto Final'
 WIDTH = 1000 # Largura da tela
 HEIGHT = 600 # Altura da tela
-TILE_SIZE = 20 # Tamanho de cada tile
-PLAYER_WIDTH = TILE_SIZE
-PLAYER_HEIGHT = int(TILE_SIZE * 2)
+TILE_WIDHT = 20 # Tamanho de cada tile
+TILE_HEIGHT = 40
+PLAYER_WIDTH = int(TILE_WIDHT * 2)
+PLAYER_HEIGHT = TILE_HEIGHT
 FPS = 60 # Frames por segundo
 WINDOW_SIZE = (1000,600) # set up window size
 
@@ -27,40 +29,38 @@ FONT = 'font'
 
 
 # Define a aceleração da gravidade
-GRAVITY = 1.7
+GRAVITY = 2
 # Define a velocidade inicial no pulo
-JUMP_SIZE = TILE_SIZE
+JUMP_SIZE = TILE_WIDHT
 # Define a velocidade em x
-SPEED_X = 7
+SPEED_X = 5
 
 # Define estados possíveis do jogador
 STILL = 0
 JUMPING = 1
 FALLING = 2
 
-
-
 # Define os tipos de tiles
 BLOCK = 0
 EMPTY = -1
+Ground = -2
 
 # Define o mapa com os tipos de tiles
 MAP = [
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, BLOCK, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, BLOCK],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY],
 ]
 
 class Tile(pygame.sprite.Sprite):
@@ -71,14 +71,14 @@ class Tile(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # Aumenta o tamanho do tile.
-        tile_img = pygame.transform.scale(tile_img, (100, 40))
+        tile_img = pygame.transform.scale(tile_img, (40,TILE_HEIGHT))
 
         # Define a imagem do tile.
         self.image = tile_img
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-        self.rect.x = x * 100
-        self.rect.y = y * 40
+        self.rect.x = x * 40
+        self.rect.y = y * TILE_HEIGHT
         self.speedx = 0
 
     def update(self):
@@ -186,6 +186,7 @@ def load_assets(img_dir):
     assets = {}
     assets[PLAYER_IMG] = pygame.image.load(path.join(img_dir, 'hero.png')).convert_alpha()
     assets[BLOCK] = pygame.image.load(path.join(img_dir, 'Plataforma.png')).convert()
+    assets[Ground] = pygame.image.load(path.join(img_dir, 'Ground.png')).convert()
     assets[BACKGROUND_IMG] = pygame.image.load(path.join(img_dir, 'trump.png')).convert()
     assets[FONT] = pygame.font.Font(path.join(img_dir, 'font.ttf'), 30)
     return assets
@@ -224,10 +225,16 @@ def game_screen(screen):
         for row in range(len(MAP[column])):
             tile_type = MAP[column][row]
             if tile_type == BLOCK:
-                tile = Tile(assets[tile_type], row, column)
+                tile = Tile(assets[BLOCK], row, column)
                 blocks.add(tile)        
                 all_sprites.add(tile)
                 world_sprites.add(tile)
+
+    for row in range(WIDTH):
+        tile2 = Tile(assets[Ground], row, 14)
+        blocks.add(tile2)        
+        all_sprites.add(tile2)
+        world_sprites.add(tile2)
 
     while state != DONE:
 
@@ -239,9 +246,7 @@ def game_screen(screen):
 
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state=DONE
-                 
-
+                state = DONE
 
             # Verifica se apertou alguma tecla.
             if event.type == pygame.KEYDOWN:
