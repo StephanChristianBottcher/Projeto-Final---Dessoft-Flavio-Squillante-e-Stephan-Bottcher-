@@ -24,8 +24,6 @@ BACKGROUND_IMG = 'background_img'
 PLAYER_IMG = 'player_img'
 BLOCK = 'block'
 FONT = 'font'
-SPIKE1_IMG = 'spike1_img'
-SPIKE2_IMG = 'spike2_img'
 
 
 # Define a aceleração da gravidade
@@ -96,14 +94,6 @@ class Tile(pygame.sprite.Sprite):
 
 
 
-
-class spike1(pygame.sprite.Sprite):
-    def __init__(self, spike_img):
-        pygame.sprite.Sprite._init_(self)
-        self.image = spike1_img
-        self.rect = self.image.get_rect()
-        self.rect.x = 20
-        self.rect.y = 500
     
 
 
@@ -209,7 +199,7 @@ def load_assets(img_dir):
     assets = {}
     assets[PLAYER_IMG] = pygame.image.load(path.join(img_dir, 'hero.png')).convert_alpha()
     assets[SPIKE1_IMG] = pygame.image.load(path.join(img_dir, 'hero.png')).convert_alpha()
-    assets[BLOCK] = pygame.image.load(path.join(img_dir, 'Bloco.png')).convert()
+    assets[BLOCK] = pygame.image.load(path.join(img_dir, 'Plataforma.png')).convert()
     assets[BACKGROUND_IMG] = pygame.image.load(path.join(img_dir, 'montanhas.png')).convert()
     assets[FONT] = pygame.font.Font(path.join(img_dir, 'font.ttf'), 30)
     return assets
