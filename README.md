@@ -1,6 +1,7 @@
 # Projeto-Final-Dessoft
 # Membros: Flavio_Squillante_e_Stephan_Bottcher
 # Jogo: Quick Adventure
+# link do jogo no youtube: https://youtu.be/Cn-Kq9uB0QI
 # Software utilizados: python 3 e pygame
 # Para executar o projeto abrir pasta 'Projeto_Final ultima versao' e executar o arquivo 'final.py'
 # Comandos: qualquer tecla ---> iniciar
